@@ -11,6 +11,15 @@ module Api
       end
     end
 
+    def destroy
+      geolocation = Geolocation.find_by!(ip: params[:ip])
+      if geolocation.delete
+        render json: geolocation, status: :ok
+      else
+        render json: { errors: { geolocation: 'could not be deleted' } }, status: :internal_server_error
+      end
+    end
+
     private
 
     def geolocation_params
@@ -20,6 +29,10 @@ module Api
     rescue_from(ActionController::ParameterMissing) do |exception|
       error = { exception.param => ['parameter is required'] }
       render json: { errors: error }, status: :unprocessable_entity
+    end
+
+    rescue_from(ActiveRecord::RecordNotFound) do |_exception|
+      render json: { message: 'record could not be found' }, status: :not_found
     end
   end
 end

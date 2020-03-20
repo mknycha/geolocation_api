@@ -77,3 +77,47 @@ describe '#POST /api/geolocations', type: 'request' do
     end
   end
 end
+
+describe '#DELETE /api/geolocations/:ip', type: 'request' do
+  before do
+    FactoryBot.create_list :geolocation, 3
+  end
+
+  let(:ip_param) { Geolocation.last.ip }
+  let(:action) { delete "/api/geolocations/#{ip_param}" }
+
+  it 'returns http status ok' do
+    action
+    expect(response).to have_http_status(:ok)
+  end
+
+  it 'deletes the record' do
+    expect { action }.to change(Geolocation, :count).by(-1)
+  end
+
+  context 'for ipv4 record' do
+    before do
+      FactoryBot.create :geolocation, ip_type: 'ipv4', ip: ip_address
+    end
+    let(:ip_address) { Faker::Internet.ip_v4_address }
+    let(:ip_param) { ip_address }
+
+    it 'returns http status ok' do
+      action
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'deletes the record' do
+      expect { action }.to change(Geolocation, :count).by(-1)
+    end
+  end
+
+  context 'when could not find record for ip provided' do
+    let(:ip_param) { '109.173.208.33' }
+
+    it 'returns http status not found' do
+      action
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+end
