@@ -1,24 +1,48 @@
-# README
+# Geolocation API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a simple API written in Ruby on Rails that allows to create, delete and get geolocation records.
+Runs on SQLite database.
 
-Things you may want to cover:
+## How to run it?
 
-* Ruby version
+### Locally
+1. Create database: `bundle exec rake db:create`
+2. Run migrations: `bundle exec rake db:migrate`
+3. Run server locally: `bundle exec rails s`
 
-* System dependencies
+### In Docker
+1. Build docker image: `docker build -t your_tag .`
+2. Run the image: `docker run -p 3000:3000 your_tag`
 
-* Configuration
+## How to use it?
 
-* Database creation
+### Create records
+```
+curl --location --request POST '127.0.0.1:3000/api/geolocations' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+	"geolocation": {
+		"ip": "109.173.208.37",
+		"ip_type": "ipv4",
+		"country": "Poland",
+		"city": "Poznań",
+		"latitude": 52.41360092163086,
+		"longitude": 16.837390899658203
+	}
+}'
+```
 
-* Database initialization
+### Get records
+```
+curl --location --request GET '127.0.0.1:3000/api/geolocations'
+```
 
-* How to run the test suite
+### Show record for the IP provided
+```
+curl --location --request GET '127.0.0.1:3000/api/geolocations/109.173.208.37'
+```
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+### Delete record for the IP provided
+```
+curl --location --request DELETE '127.0.0.1:3000/api/geolocations/109.173.208.37'
+```
