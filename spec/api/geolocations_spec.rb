@@ -105,7 +105,7 @@ describe '#GET /api/geolocations/:ip', type: 'request' do
 
   it 'returns the record as json' do
     action
-    expect(JSON.parse(response.body).except('created_at', 'updated_at')).to eq(expected_response_body)
+    expect(JSON.parse(response.body)).to eq(expected_response_body)
   end
 end
 
