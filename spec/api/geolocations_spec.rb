@@ -83,6 +83,24 @@ describe '#GET /api/geolocations/:ip', type: 'request' do
     FactoryBot.create_list :geolocation, 3
   end
 
+  let(:action) { get '/api/geolocations' }
+
+  it 'returns http status ok' do
+    action
+    expect(response).to have_http_status(:ok)
+  end
+
+  it 'returns the record as json' do
+    action
+    expect(JSON.parse(response.body).length).to eq(3)
+  end
+end
+
+describe '#GET /api/geolocations/:ip', type: 'request' do
+  before do
+    FactoryBot.create_list :geolocation, 3
+  end
+
   let(:ip_param) { Geolocation.last.ip }
   let(:action) { get "/api/geolocations/#{ip_param}" }
   let(:expected_response_body) do

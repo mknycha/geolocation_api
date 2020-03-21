@@ -11,6 +11,10 @@ module Api
       end
     end
 
+    def index
+      render json: Geolocation.all
+    end
+
     def show
       geolocation = Geolocation.find_by!(ip: params[:ip])
       render json: geolocation
