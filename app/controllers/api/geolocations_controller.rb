@@ -11,6 +11,11 @@ module Api
       end
     end
 
+    def show
+      geolocation = Geolocation.find_by!(ip: params[:ip])
+      render json: geolocation
+    end
+
     def destroy
       geolocation = Geolocation.find_by!(ip: params[:ip])
       if geolocation.delete

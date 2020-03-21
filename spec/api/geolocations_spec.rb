@@ -78,6 +78,37 @@ describe '#POST /api/geolocations', type: 'request' do
   end
 end
 
+describe '#GET /api/geolocations/:ip', type: 'request' do
+  before do
+    FactoryBot.create_list :geolocation, 3
+  end
+
+  let(:ip_param) { Geolocation.last.ip }
+  let(:action) { get "/api/geolocations/#{ip_param}" }
+  let(:expected_response_body) do
+    record = Geolocation.last
+    {
+      id: record.id,
+      ip: record.ip,
+      ip_type: record.ip_type,
+      country: record.country,
+      city: record.city,
+      latitude: record.latitude.to_s,
+      longitude: record.longitude.to_s
+    }.stringify_keys
+  end
+
+  it 'returns http status ok' do
+    action
+    expect(response).to have_http_status(:ok)
+  end
+
+  it 'returns the record as json' do
+    action
+    expect(JSON.parse(response.body).except('created_at', 'updated_at')).to eq(expected_response_body)
+  end
+end
+
 describe '#DELETE /api/geolocations/:ip', type: 'request' do
   before do
     FactoryBot.create_list :geolocation, 3
