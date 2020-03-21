@@ -13,8 +13,10 @@ COPY . /app
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler
 RUN bundle install
-# avoid errors with rails app not found
+# avoid errors with rails commands not found
 RUN rake app:update:bin
+RUN bundle exec rails db:create
+RUN bundle exec rails db:migrate
 
 # We need to add -b 0.0.0.0, otherwise it runs on localhost within the container and it's not visible
 CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]
